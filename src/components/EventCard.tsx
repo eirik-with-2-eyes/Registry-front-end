@@ -1,18 +1,5 @@
 import React from 'react';
-
-interface Participant {
-  id: number;
-  name: string;
-}
-
-export interface Event {
-  id: number;
-  name: string;
-  date: string;
-  description: string;
-  owner: number;
-  participants: Participant[];
-}
+import { Event } from './common/types';
 
 interface EventCardProps {
   event: Event;
@@ -25,7 +12,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onSelect }) => {
       <h3 className="text-xl font-bold mb-2">{event.name}</h3>
       <p className="text-gray-600 mb-1">Date: {new Date(event.date).toLocaleDateString()}</p>
       <p className="text-gray-600 mb-4">{event.description}</p>
-      <p className="text-sm text-gray-500 mb-4">{event.participants.length} participants</p>
       <button 
         onClick={onSelect}
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"

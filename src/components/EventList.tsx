@@ -1,18 +1,6 @@
 import React from 'react';
 import { EventCard } from './EventCard.tsx';
-
-// Define interfaces for the types
-interface Event {
-  id: number;
-  name: string;
-  date: string;
-  description: string;
-  owner: number;
-  participants: Array<{
-    id: number;
-    name: string;
-  }>;
-}
+import { Event } from './common/types';
 
 interface EventListProps {
   events: Event[];

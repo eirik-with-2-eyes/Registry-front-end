@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { EventList } from './components/EventList';
 import { EventDetail } from './components/EventDetail';
 import { RegistryDetail } from './components/RegistryDetail';
@@ -6,24 +7,13 @@ import { CreateEventForm } from './components/CreateEventForm';
 import { CreateRegistryForm } from './components/CreateRegistryForm';
 import { Navbar } from './components/Navbar';
 import { sampleData } from './data/sampleData';
-import { Event } from './components/EventCard';
 import { Registry } from './components/RegistryCard';
+import { Event, NewEvent, NewItem } from './components/common/types';
 
 export interface User {
   id: number;
   name: string;
   email: string;
-}
-
-interface NewItem {
-  name: string;
-  price: string;
-}
-
-interface NewEvent {
-  name: string;
-  date: string;
-  description: string;
 }
 
 const App: React.FC = () => {
@@ -37,6 +27,20 @@ const App: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedRegistry, setSelectedRegistry] = useState<Registry | null>(null);
   const [guestName, setGuestName] = useState<string>("");
+
+   // Fetch events from backend
+   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/events');
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
   
   // Handle claiming an item
   const handleClaimItem = (registryId: number, itemId: number): void => {
@@ -57,20 +61,20 @@ const App: React.FC = () => {
   };
   
   // Handle creating a new event
-  const handleCreateEvent = (eventData: NewEvent): void => {
-    const newEventId = Math.max(...events.map(event => event.id), 0) + 1;
-    const createdEvent: Event = {
-      id: newEventId,
-      name: eventData.name,
-      date: eventData.date,
-      description: eventData.description,
-      owner: currentUser.id,
-      participants: [{ id: currentUser.id, name: currentUser.name }]
-    };
-    
-    setEvents([...events, createdEvent]);
-    setSelectedEvent(createdEvent);
-    setActiveView("event-detail");
+  const handleCreateEvent = async (eventData: NewEvent): Promise<void> => {
+    try {
+      const response = await axios.post('http://localhost:3000/events', {
+        ...eventData,
+        owner: currentUser.id,
+        participants: [{ id: currentUser.id, name: currentUser.name }]
+      });
+      const createdEvent = response.data;
+      setEvents([...events, createdEvent]);
+      setSelectedEvent(createdEvent);
+      setActiveView("event-detail");
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
   };
   
   // Handle creating a new registry
@@ -119,13 +123,13 @@ const App: React.FC = () => {
   
   // Handle adding a participant to an event
   const handleAddParticipant = (eventId: number, participantName: string, _participantEmail: string): void => {
-    const newParticipantId = Math.max(...events.flatMap(e => e.participants.map(p => p.id)), 0) + 1;
+    // const newParticipantId = Math.max(...events.flatMap(e => e.participants.map(p => p.id)), 0) + 1;
     
     setEvents(events.map(event => {
       if (event.id === eventId) {
         return {
           ...event,
-          participants: [...event.participants, { id: newParticipantId, name: participantName }]
+          // participants: [...event.participants, { id: newParticipantId, name: participantName }]
         };
       }
       return event;
@@ -219,9 +223,7 @@ const App: React.FC = () => {
       case "create-registry":
         return (
           <CreateRegistryForm 
-            events={events.filter(event => 
-              event.participants.some(p => p.id === currentUser.id)
-            )}
+            events={events}
             selectedEventId={selectedEvent ? selectedEvent.id : null}
             onBack={() => setActiveView("event-detail")}
             onCreateRegistry={handleCreateRegistry}

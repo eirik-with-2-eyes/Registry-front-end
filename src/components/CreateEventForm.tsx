@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { BackButton } from './common/BackButton';
+import { NewEvent } from './common/types';
 
-interface NewEvent {
-  name: string;
-  date: string;
-  description: string;
-}
 
 interface CreateEventFormProps {
   onBack: () => void;
@@ -13,7 +9,7 @@ interface CreateEventFormProps {
 }
 
 export const CreateEventForm: React.FC<CreateEventFormProps> = ({ onBack, onCreateEvent }) => {
-  const [newEvent, setNewEvent] = useState<NewEvent>({ name: "", date: "", description: "" });
+  const [newEvent, setNewEvent] = useState<NewEvent>({ name: "", date: "", description: "", location:"" });
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
