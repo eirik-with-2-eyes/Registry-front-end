@@ -16,9 +16,16 @@ export interface NewEvent {
     date: string;
     description: string;
     location: string;
+    owner: number;
   }
 
   export interface NewItem {
     name: string;
     price: string;
+  }
+
+  export interface User {
+    id: number;
+    name: string;
+    email: string;
   }

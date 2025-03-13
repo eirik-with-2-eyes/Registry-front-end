@@ -3,7 +3,7 @@ import { BackButton } from './common/BackButton.tsx';
 import { AddItemForm } from './AddItemForm.tsx';
 import { RegistryItemCard } from './RegistryItemCard';
 import { Registry } from './RegistryCard.tsx';
-import { Event } from './EventCard.tsx';
+import { Event } from './common/types.ts';
 
 interface User {
   id: number;
@@ -40,8 +40,8 @@ export const RegistryDetail: React.FC<RegistryDetailProps> = ({
   onRemoveItem 
 }) => {
   // Get owner name from registry's event participants
-  const eventData = events.find(e => e.id === registry.eventId);
-  const ownerName = eventData?.participants.find(p => p.id === registry.userId)?.name || "Unknown";
+  // const eventData = events.find(e => e.id === registry.eventId);
+  const ownerName = "Unknown";
   const isOwnRegistry = registry.userId === currentUser.id;
   
   return (

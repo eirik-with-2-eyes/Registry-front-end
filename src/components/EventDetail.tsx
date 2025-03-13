@@ -1,13 +1,8 @@
 import React from 'react';
 import { BackButton } from './common/BackButton.tsx';
 import { RegistryCard, Registry } from './RegistryCard.tsx';
-import { Event } from './EventCard.tsx';
+import { Event, User } from './common/types.ts';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
 
 interface EventDetailProps {
   event: Event; 
@@ -40,9 +35,6 @@ export const EventDetail: React.FC<EventDetailProps> = ({
         <div className="mt-4">
           <h3 className="font-bold mb-2">Participants:</h3>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {event.participants.map(participant => (
-              <li key={participant.id} className="text-gray-700">{participant.name}</li>
-            ))}
           </ul>
           
           {event.owner === currentUser.id && (
@@ -68,14 +60,12 @@ export const EventDetail: React.FC<EventDetailProps> = ({
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-bold">Wishlists for this Event</h3>
           {/* Only show create registry button if the user is a participant */}
-          {event.participants.some(p => p.id === currentUser.id) && (
-            <button 
-              onClick={onCreateRegistry}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Create My Wishlist
-            </button>
-          )}
+          <button 
+            className="text-blue-500 hover:underline"
+            onClick={onCreateRegistry}
+          >
+            + Create a new wishlist
+          </button>
         </div>
         
         {registries.length === 0 ? (
@@ -86,7 +76,7 @@ export const EventDetail: React.FC<EventDetailProps> = ({
               <RegistryCard 
                 key={registry.id} 
                 registry={registry} 
-                owner={event.participants.find(p => p.id === registry.userId)?.name}
+                owner={"test"}
                 onSelect={() => onSelectRegistry(registry)} 
               />
             ))}

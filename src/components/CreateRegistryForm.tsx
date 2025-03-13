@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BackButton } from './common/BackButton';
-import { Event } from './EventCard';
+import { Event } from './common/types';
 
 interface NewRegistry {
   name: string;
